@@ -1,0 +1,47 @@
+openapi: 3.0.0
+info:
+  title: BookPageSequenceService
+  description: An API to generate page numbering sequences for given signature sizes
+  version: 1.0.0
+
+servers:
+  - url: http://localhost:8080
+    description: localhost
+
+paths:
+  /:
+    get:
+      summary: Retrieve a page sequence by a list of signatures
+      description: Expects signatures to be in a CSV format
+      parameters:
+        - name: signatures
+          in: query
+          description: sequence of signature sizes in CSV format
+          required: true
+          schema:
+            type: array
+            items:
+              type: integer
+              format: int64
+            minItems: 1
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PageSequence'
+        '400':
+          description: BAD REQUEST
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PageSequence'
+components:
+  schemas:
+    PageSequence:
+      type: array
+      items:
+        type: integer
+        format: int64
+      minItems: 0
