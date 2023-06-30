@@ -21,13 +21,14 @@ function* signatureSequenceGenerator(sheets: number) {
 //lazy caching for performance reasons
 const cache = new Map<number, number[]>();
 
-const signatureSequence = (sheets: number) => {
-  if (cache.has(sheets)) {
-    return cache.get(sheets);
+const signatureSequence = (sheets: number): number[] => {
+  const found = cache.get(sheets);
+  if (!found) {
+    const result = [...signatureSequenceGenerator(sheets)];
+    cache.set(sheets, result);
+    return result;
   }
-  const result = [...signatureSequenceGenerator(sheets)];
-  cache.set(sheets, result);
-  return result;
+  return found;
 };
 
 export default signatureSequence;
