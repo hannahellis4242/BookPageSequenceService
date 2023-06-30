@@ -4,6 +4,7 @@
   "description": "",
   "main": "dist/main.js",
   "scripts": {
+    "test": "jest",
     "build-dev": "tsc -w",
     "build": "tsc",
     "dev": "nodemon dist/main.js",
