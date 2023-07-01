@@ -12,11 +12,11 @@ paths:
   /:
     get:
       summary: Retrieve a page sequence by a list of signatures
-      description: Expects signatures to be in a CSV format
+      description: Expects signatures to be in a JSON format
       parameters:
         - name: signatures
           in: query
-          description: sequence of signature sizes in CSV format
+          description: sequence of signature sizes in JSON format
           required: true
           schema:
             type: array
