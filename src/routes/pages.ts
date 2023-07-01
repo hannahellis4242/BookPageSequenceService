@@ -17,7 +17,6 @@ pages.get("/", async (req, res) => {
     return;
   }
   const value = JSON.parse(signatures.toString());
-  console.log(value);
   if (!validate(value)) {
     res.status(400).json([]);
     return;
