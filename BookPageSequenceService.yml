@@ -2,7 +2,7 @@ openapi: 3.0.0
 info:
   title: BookPageSequenceService
   description: An API to generate page numbering sequences for given signature sizes
-  version: 1.0.0
+  version: 2.0.0
 
 servers:
   - url: http://localhost:8080
@@ -10,20 +10,44 @@ servers:
 
 paths:
   /:
+    post:
+      summary: Retrieve the solution key for the given problem
+      description: For the given sequence of sheets in each signature, gives back the solution key
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Signatures'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Key'
+        '400':
+          description: BAD REQUEST
+          content:
+            application/json:
+              schema:
+                type: string
+        '500':
+          description: error
+          content:
+            text/plain:
+              schema:
+                type: string
     get:
       summary: Retrieve a page sequence by a list of signatures
       description: Expects signatures to be in a JSON format
       parameters:
-        - name: signatures
+        - name: key
           in: query
-          description: sequence of signature sizes in JSON format
+          description: the solution key
           required: true
           schema:
-            type: array
-            items:
-              type: integer
-              format: int64
-            minItems: 1
+            $ref: '#/components/schemas/Key'
       responses:
         '200':
           description: OK
@@ -39,6 +63,14 @@ paths:
                 $ref: '#/components/schemas/PageSequence'
 components:
   schemas:
+    Signatures:
+      type: array
+      items:
+        type: integer
+        format: int64
+        minItems: 1
+    Key:
+      type: string
     PageSequence:
       type: array
       items:
