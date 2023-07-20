@@ -26,17 +26,14 @@ pagesV2.post("/", async (req, res) => {
       .send("expected an list of sheets per signature in your book");
     return;
   }
-  console.log(signatures);
   try {
     await client.connect();
-    const values = signatures as number[];
-    console.log(values);
-    const sequence = pageSequence(values);
-    console.log(sequence);
+    const sequence = pageSequence(signatures as number[]);
     const key = v4();
     await client.set(key, JSON.stringify(sequence), { EX: 120 });
     res.send(key);
   } catch (e) {
+    console.error(e);
     res.status(StatusCodes.INTERNAL_SERVER_ERROR).send(JSON.stringify(e));
   } finally {
     client.disconnect();
@@ -60,6 +57,7 @@ pagesV2.get("/", async (req, res) => {
     }
     res.json(JSON.parse(solution));
   } catch (e) {
+    console.error(e);
     res.sendStatus(StatusCodes.INTERNAL_SERVER_ERROR);
   } finally {
     client.disconnect();
