@@ -1,6 +1,6 @@
 import { Router } from "express";
 import AJV from "ajv";
-import pageSequence from "../solver/pageSequence";
+import pageSequence from "../../solver/pageSequence";
 
 const pages = Router();
 
