@@ -19,16 +19,20 @@ const client = createClient({
 });
 
 pagesV2.post("/", async (req, res) => {
-  const signatures = JSON.parse(req.body.toString());
+  const signatures = req.body;
   if (!validate(signatures)) {
     res
       .status(StatusCodes.BAD_REQUEST)
       .send("expected an list of sheets per signature in your book");
     return;
   }
+  console.log(signatures);
   try {
     await client.connect();
-    const sequence = pageSequence(signatures as number[]);
+    const values = signatures as number[];
+    console.log(values);
+    const sequence = pageSequence(values);
+    console.log(sequence);
     const key = v4();
     await client.set(key, JSON.stringify(sequence), { EX: 120 });
     res.send(key);
@@ -37,21 +41,6 @@ pagesV2.post("/", async (req, res) => {
   } finally {
     client.disconnect();
   }
-});
-
-pagesV2.get("/", async (req, res) => {
-  const { signatures } = req.query;
-  if (!signatures) {
-    res.status(400).json([]);
-    return;
-  }
-  const value = JSON.parse(signatures.toString());
-  if (!validate(value)) {
-    res.status(400).json([]);
-    return;
-  }
-  const sequence = pageSequence(value as number[]);
-  res.json(sequence);
 });
 
 pagesV2.get("/", async (req, res) => {
