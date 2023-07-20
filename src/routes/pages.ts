@@ -1,8 +1,7 @@
 import { Router } from "express";
 import AJV from "ajv";
 import { createClient } from "redis";
-import pageSequence from "../../solver/pageSequence";
-import { STATUS_CODES } from "http";
+import pageSequence from "../solver/pageSequence";
 import { StatusCodes } from "http-status-codes";
 import { v4 } from "uuid";
 
