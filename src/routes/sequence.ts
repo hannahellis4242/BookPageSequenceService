@@ -1,15 +1,14 @@
 import { Router } from "express";
 import AJV from "ajv";
 import { createClient } from "redis";
-import pageSequence from "../solver/pageSequence";
 import { StatusCodes } from "http-status-codes";
 import { v4 } from "uuid";
 
-const pagesV2 = Router();
+import pageSequence from "../solver/pageSequence";
+import schema from "./schema.json";
 
-const schema = JSON.parse(
-  '{"type":"array","minItems":1,"items":{"type":"number"}}'
-);
+const sequence = Router();
+
 const ajv = new AJV();
 const validate = ajv.compile(schema);
 
@@ -17,9 +16,9 @@ const client = createClient({
   url: "redis://redis:6379",
 });
 
-pagesV2.post("/", async (req, res) => {
+sequence.post("/", async (req, res) => {
   const signatures = req.body;
-  if (!validate(signatures)) {
+  if (!validate(req.body)) {
     res
       .status(StatusCodes.BAD_REQUEST)
       .send("expected an list of sheets per signature in your book");
@@ -39,7 +38,7 @@ pagesV2.post("/", async (req, res) => {
   }
 });
 
-pagesV2.get("/", async (req, res) => {
+sequence.get("/", async (req, res) => {
   const { key } = req.query;
   if (!key) {
     res
@@ -62,4 +61,4 @@ pagesV2.get("/", async (req, res) => {
     client.disconnect();
   }
 });
-export default pagesV2;
+export default sequence;

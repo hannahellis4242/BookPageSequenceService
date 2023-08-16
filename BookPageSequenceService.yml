@@ -2,14 +2,14 @@ openapi: 3.0.0
 info:
   title: BookPageSequenceService
   description: An API to generate page numbering sequences for given signature sizes
-  version: 2.0.0
+  version: 3.0.0
 
 servers:
   - url: http://localhost:8080
     description: localhost
 
 paths:
-  /:
+  /sequence:
     post:
       summary: Retrieve the solution key for the given problem
       description: For the given sequence of sheets in each signature, gives back the solution key
@@ -39,7 +39,7 @@ paths:
               schema:
                 type: string
     get:
-      summary: Retrieve a page sequence by a list of signatures
+      summary: Retrieve a page sequence for a list of signatures
       description: Expects signatures to be in a JSON format
       parameters:
         - name: key
@@ -61,6 +61,59 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/PageSequence'
+  /separated:
+    post:
+      summary: Retrieve the solution key for the given problem
+      description: For the given sequence of sheets in each signature, gives back the solution key
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Signatures'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Key'
+        '400':
+          description: BAD REQUEST
+          content:
+            application/json:
+              schema:
+                type: string
+        '500':
+          description: error
+          content:
+            text/plain:
+              schema:
+                type: string
+    get:
+      summary: Retrieve a page sequence for a list of signatures, separated by signature
+      description: Expects signatures to be in a JSON format
+      parameters:
+        - name: key
+          in: query
+          description: the solution key
+          required: true
+          schema:
+            $ref: '#/components/schemas/Key'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PageSequenceSeparated'
+        '400':
+          description: BAD REQUEST
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PageSequenceSeparated'
+  
 components:
   schemas:
     Signatures:
@@ -77,3 +130,11 @@ components:
         type: integer
         format: int64
       minItems: 0
+    PageSequenceSeparated:
+      type: array
+      items:
+        type: array
+        items:
+          type: integer
+          format: int64
+        minItems: 1
