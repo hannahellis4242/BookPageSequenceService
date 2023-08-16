@@ -6,9 +6,8 @@ import { v4 } from "uuid";
 
 import pageSequence from "../solver/pageSequence";
 import schema from "./schema.json";
-import separatedPageSequence from "../solver/separatedPageSequence";
 
-const pagesV2 = Router();
+const sequence = Router();
 
 const ajv = new AJV();
 const validate = ajv.compile(schema);
@@ -17,7 +16,7 @@ const client = createClient({
   url: "redis://redis:6379",
 });
 
-pagesV2.post("/", async (req, res) => {
+sequence.post("/", async (req, res) => {
   const signatures = req.body;
   if (!validate(req.body)) {
     res
@@ -39,7 +38,7 @@ pagesV2.post("/", async (req, res) => {
   }
 });
 
-pagesV2.get("/", async (req, res) => {
+sequence.get("/", async (req, res) => {
   const { key } = req.query;
   if (!key) {
     res
@@ -62,4 +61,4 @@ pagesV2.get("/", async (req, res) => {
     client.disconnect();
   }
 });
-export default pagesV2;
+export default sequence;
