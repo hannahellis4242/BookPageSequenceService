@@ -1,15 +1,15 @@
 import { Router } from "express";
 import AJV from "ajv";
 import { createClient } from "redis";
-import pageSequence from "../solver/pageSequence";
 import { StatusCodes } from "http-status-codes";
 import { v4 } from "uuid";
 
+import pageSequence from "../solver/pageSequence";
+import schema from "./schema.json";
+import separatedPageSequence from "../solver/separatedPageSequence";
+
 const pagesV2 = Router();
 
-const schema = JSON.parse(
-  '{"type":"array","minItems":1,"items":{"type":"number"}}'
-);
 const ajv = new AJV();
 const validate = ajv.compile(schema);
 
@@ -19,7 +19,7 @@ const client = createClient({
 
 pagesV2.post("/", async (req, res) => {
   const signatures = req.body;
-  if (!validate(signatures)) {
+  if (!validate(req.body)) {
     res
       .status(StatusCodes.BAD_REQUEST)
       .send("expected an list of sheets per signature in your book");
